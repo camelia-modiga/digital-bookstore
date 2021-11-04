@@ -2,20 +2,10 @@ package com.bookstore.bookstore.model.bookauthor;
 
 import javax.persistence.*;
 
-//@Table(name = "book_author", indexes = {
-//        @Index(name = "fk_ISBN_idx", columnList = "isbn"),
-//        @Index(name = "fk_id_author_idx", columnList = "author_id")
-//})
 //@Entity
 //public class BookAuthor {
-//    @Id
-//    @Column(name = "`index`", nullable = false)
-//    private Integer id;
-//
-//    @Column(name = "isbn", nullable = false, length = 50)
+//    private @Id Integer index;
 //    private String isbn;
-//
-//    @Column(name = "author_id", nullable = false)
 //    private Integer authorId;
 //
 //    public Integer getAuthorId() {
@@ -34,11 +24,11 @@ import javax.persistence.*;
 //        this.isbn = isbn;
 //    }
 //
-//    public Integer getId() {
-//        return id;
+//    public Integer getIndex() {
+//        return index;
 //    }
 //
-//    public void setId(Integer id) {
-//        this.id = id;
+//    public void setIndex(Integer index) {
+//        this.index = index;
 //    }
 //}

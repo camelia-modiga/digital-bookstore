@@ -6,7 +6,7 @@ import javax.persistence.*;
 public class Author {
 
     private @Id @GeneratedValue Integer id;
-    private String fistName;
+    private String firstName;
     private String lastName;
 
     public String getLastName() {
@@ -17,12 +17,12 @@ public class Author {
         this.lastName = lastName;
     }
 
-    public String getFistName() {
-        return fistName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFistName(String fistName) {
-        this.fistName = fistName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public Integer getId() {

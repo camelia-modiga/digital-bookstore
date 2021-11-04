@@ -5,6 +5,7 @@ import com.bookstore.bookstore.model.author.AuthorRepository;
 import com.bookstore.bookstore.services.exceptions.AuthorNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -20,9 +21,32 @@ public class AuthorService {
         return authorRepository.findAll();
     }
 
-    public Author getOneAAuthor(Integer id) {
+    public Author getOneAuthor(Integer id) {
         return authorRepository.findById(id)
         .orElseThrow(() -> new AuthorNotFoundException(id));
     }
 
+    public Author createNewAuthor(Author newAuthor) {
+        return authorRepository.save(newAuthor);
+    }
+
+    public Author updateAuthor(Author newAuthor, Integer id) {
+
+        return authorRepository.findById(id)
+                .map(author -> {
+                    author.setFirstName(newAuthor.getFirstName());
+                    author.setLastName(newAuthor.getLastName());
+                    return authorRepository.save(author);
+                })
+                .orElseGet(() -> {
+                    newAuthor.setId(id);
+                    return authorRepository.save(newAuthor);
+                });
+    }
+
+    public void deleteAuthorById(Integer id) {
+        if(authorRepository.findById(id).isEmpty())
+            throw new AuthorNotFoundException(id);
+        authorRepository.deleteById(id);
+    }
 }
