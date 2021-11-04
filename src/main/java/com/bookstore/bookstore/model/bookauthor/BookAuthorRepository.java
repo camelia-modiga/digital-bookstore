@@ -1,0 +1,7 @@
+package com.bookstore.bookstore.model.bookauthor;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+//@Repository
+//public interface BookAuthorRepository extends JpaRepository<BookAuthorRepository, Integer> {
+//}

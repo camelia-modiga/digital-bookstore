@@ -1,22 +1,12 @@
-package com.bookstore.bookstore.model;
+package com.bookstore.bookstore.model.author;
 
 import javax.persistence.*;
 
-@Table(name = "author", indexes = {
-        @Index(name = "idx_author_firstName", columnList = "lastName"),
-        @Index(name = "idx_author_lastName", columnList = "fistName")
-})
 @Entity
 public class Author {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
 
-    @Column(name = "fistName", nullable = false, length = 45)
+    private @Id @GeneratedValue Integer id;
     private String fistName;
-
-    @Column(name = "lastName", length = 45)
     private String lastName;
 
     public String getLastName() {
