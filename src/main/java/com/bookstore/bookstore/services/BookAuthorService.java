@@ -29,7 +29,7 @@ public class BookAuthorService {
 
     public CollectionModel<EntityModel<Author>> get(String isbn) {
         List<EntityModel<Author>> authors=bookAuthorRepository.findAll().stream()
-                .filter(r->r.getIsbn().getIsbn().matches(isbn))
+                .filter(r->r.getId().getIsbn().matches(isbn))
                 .map(l->author.getOneAuthor(l.getAuthor().getId()))
                 .collect(Collectors.toList());
         return CollectionModel.of(authors, linkTo(methodOn(AuthorService.class).getAllAuthors()).withSelfRel());

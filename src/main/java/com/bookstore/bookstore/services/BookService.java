@@ -9,6 +9,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -18,8 +19,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class BookService {
 
     @Autowired
-
     private final BookRepository bookRepository;
+
     public BookService(BookRepository authorRepository){
         this.bookRepository = authorRepository;
     }
@@ -36,10 +37,46 @@ public class BookService {
 
     public EntityModel<Book> getOneBook(String isbn) {
         Book book = bookRepository.findById(isbn)
-                .orElseThrow(() -> new BookNotFoundException(isbn));
+                .orElseThrow(() -> new BookNotFoundException());
         return EntityModel.of(book,
                 linkTo(methodOn(BookService.class).getOneBook(isbn)).withSelfRel(),
                 linkTo(methodOn(BookService.class).getAllBooks()).withRel("books"));
+    }
+
+    public CollectionModel<Book> getAllBooksByGenre(String genre) {
+        Optional<List<Book>> bookOptional = Optional.of(bookRepository.findByGenre(genre));
+        if(!bookOptional.isEmpty()) {
+            return CollectionModel.of(bookOptional.get(),
+                    linkTo(methodOn(BookService.class).getAllBooksByGenre(genre)).withSelfRel(),
+                    linkTo(methodOn(BookService.class).getAllBooks()).withRel("books"));
+        }
+        else{
+            throw new BookNotFoundException();
+        }
+    }
+
+    public CollectionModel<Book> getAllBooksByYear(Integer year) {
+        Optional<List<Book>> bookOptional = Optional.of(bookRepository.findByYear(year));
+        if(!bookOptional.isEmpty()) {
+            return CollectionModel.of(bookOptional.get(),
+                    linkTo(methodOn(BookService.class).getAllBooksByYear(year)).withSelfRel(),
+                    linkTo(methodOn(BookService.class).getAllBooks()).withRel("books"));
+        }
+        else{
+            throw new BookNotFoundException();
+        }
+    }
+
+    public CollectionModel<Book> getAllBooksByGenreAndYear(String genre,Integer year) {
+        Optional<List<Book>> bookOptional = Optional.of(bookRepository.findByGenreAndYear(genre,year));
+        if(!bookOptional.isEmpty()) {
+            return CollectionModel.of(bookOptional.get(),
+                    linkTo(methodOn(BookService.class).getAllBooksByGenreAndYear(genre,year)).withSelfRel(),
+                    linkTo(methodOn(BookService.class).getAllBooks()).withRel("books"));
+        }
+        else{
+            throw new BookNotFoundException();
+        }
     }
 
     public Book createNewBook(Book newBook) {
@@ -48,7 +85,7 @@ public class BookService {
 
     public Book updateBook(Book newBook, String isbn) {
         if(bookRepository.findById(isbn).isEmpty())
-            throw new BookNotFoundException(isbn);
+            throw new BookNotFoundException();
         else return bookRepository.findById(isbn)
                 .map(book -> {
                     book.setTitle(newBook.getTitle());
@@ -65,7 +102,7 @@ public class BookService {
 
     public void deleteBookByIsbn(String isbn) {
         if(bookRepository.findById(isbn).isEmpty())
-            throw new BookNotFoundException(isbn);
+            throw new BookNotFoundException();
         bookRepository.deleteById(isbn);
     }
 }

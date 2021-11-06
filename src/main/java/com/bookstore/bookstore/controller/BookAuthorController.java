@@ -21,7 +21,7 @@ public class BookAuthorController {
         this.bookAuthorService = bookAuthorService;
     }
 
-    @GetMapping("/books/{isbn}/authors")
+    @GetMapping("/book/{isbn}/authors")
     public CollectionModel<EntityModel<Author>> getAuthors(@PathVariable String isbn){
         return bookAuthorService.get(isbn);
     }

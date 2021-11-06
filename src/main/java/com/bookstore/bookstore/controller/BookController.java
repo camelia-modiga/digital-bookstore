@@ -24,9 +24,24 @@ public class BookController {
         return bookService.getAllBooks();
     }
 
-    @GetMapping("book/{isbn}")
+    @GetMapping("/book/{isbn}")
     public EntityModel<Book> getBookByIsbn(@PathVariable String isbn) {
         return bookService.getOneBook(isbn);
+    }
+
+    @RequestMapping(value="/books", params="genre", method=RequestMethod.GET)
+    public CollectionModel<Book> getBookByGenre(@RequestParam String genre) {
+        return bookService.getAllBooksByGenre(genre);
+    }
+
+    @RequestMapping(value="/books", params="year", method=RequestMethod.GET)
+    public CollectionModel<Book> getBooksByYear(@RequestParam Integer year) {
+        return bookService.getAllBooksByYear(year);
+    }
+
+    @RequestMapping(value="/books", params={"genre","year"}, method=RequestMethod.GET)
+    public CollectionModel<Book> getBooksByGenreAndYear(@RequestParam String genre, @RequestParam Integer year) {
+        return bookService.getAllBooksByGenreAndYear(genre,year);
     }
 
     @PostMapping("/book")
