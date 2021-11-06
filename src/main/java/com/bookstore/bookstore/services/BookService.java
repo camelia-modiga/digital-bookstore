@@ -4,9 +4,15 @@ import com.bookstore.bookstore.model.book.Book;
 import com.bookstore.bookstore.model.book.BookRepository;
 import com.bookstore.bookstore.services.exceptions.BookNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class BookService {
@@ -18,13 +24,22 @@ public class BookService {
         this.bookRepository = authorRepository;
     }
 
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public CollectionModel<EntityModel<Book>> getAllBooks() {
+        List<EntityModel<Book>> books = bookRepository.findAll().stream()
+                .map(book -> EntityModel.of(book,
+                        linkTo(methodOn(BookService.class).getOneBook(book.getIsbn())).withSelfRel(),
+                        linkTo(methodOn(BookService.class).getAllBooks()).withRel("books")))
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(books, linkTo(methodOn(BookService.class).getAllBooks()).withSelfRel());
     }
 
-    public Book getOneBook(String isbn) {
-        return bookRepository.findById(isbn)
+    public EntityModel<Book> getOneBook(String isbn) {
+        Book book = bookRepository.findById(isbn)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
+        return EntityModel.of(book,
+                linkTo(methodOn(BookService.class).getOneBook(isbn)).withSelfRel(),
+                linkTo(methodOn(BookService.class).getAllBooks()).withRel("books"));
     }
 
     public Book createNewBook(Book newBook) {

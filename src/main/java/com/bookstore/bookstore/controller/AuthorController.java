@@ -3,6 +3,8 @@ package com.bookstore.bookstore.controller;
 import com.bookstore.bookstore.model.author.Author;
 import com.bookstore.bookstore.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,12 +22,12 @@ public class AuthorController {
     }
 
     @GetMapping("/authors")
-    public List<Author> getAuthors(){
+    public CollectionModel<EntityModel<Author>> getAuthors(){
         return authorService.getAllAuthors();
     }
 
     @GetMapping("/author/{id}")
-    public Author getAuthorById(@PathVariable Integer id) {
+    public EntityModel<Author> getAuthorById(@PathVariable Integer id) {
         return authorService.getOneAuthor(id);
     }
 
@@ -43,4 +45,10 @@ public class AuthorController {
     public void deleteAuthor(@PathVariable Integer id) {
         authorService.deleteAuthorById(id);
     }
+
+//    @GetMapping("/books/{ISBN}/authors")
+//    public CollectionModel<EntityModel<Author>> getAuthors(@PathVariable String isbn){
+//        return authorService.get(isbn);
+//    }
+
 }

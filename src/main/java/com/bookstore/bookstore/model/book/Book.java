@@ -11,6 +11,14 @@ public class Book {
     private Integer year;
     private String genre;
 
+//    @ManyToOne
+//    @JoinColumn(name = "book_isbn")
+//    private Book book;
+//
+//    public Book getBook() {
+//        return book;
+//    }
+
     public String getGenre() {
         return genre;
     }
