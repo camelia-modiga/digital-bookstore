@@ -1,41 +1,38 @@
 package com.bookstore.bookstore.model.bookauthor;
 
+import com.bookstore.bookstore.model.author.Author;
 import com.bookstore.bookstore.model.book.Book;
 
 import javax.persistence.*;
 
+@Table(name = "book_author")
 @Entity
 public class BookAuthor {
+    @Id
+    @Column(name = "`index`", nullable = false)
+    private Integer index;
 
-    private @Id Integer index;
-    private String isbn;
-    private Integer author_id;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "isbn", nullable = false)
+    private Book isbn;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "author_id", nullable = false)
+    private Author author;
 
-//    @ManyToOne
-//    @JoinColumn(name = "book_isbn")
-//    private Book book;
-//
-//    public Book getBook() {
-//        return book;
-//    }
-//    @ManyToOne(optional=false)
-//    @JoinColumn(name = "author_id",insertable=false, updatable=false)
-//    private Author author;
-
-    public Integer getAuthorId() {
-        return author_id;
+    public Author getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(Integer authorId) {
-        this.author_id = authorId;
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
-    public String getIsbn() {
+    public Book getIsbn() {
         return isbn;
     }
 
-    public void setIsbn(String isbn) {
+    public void setIsbn(Book isbn) {
         this.isbn = isbn;
     }
 
@@ -43,11 +40,7 @@ public class BookAuthor {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(Integer id) {
         this.index = index;
     }
-
-//    public Author getAuthor() {
-//        return author;
-//    }
 }

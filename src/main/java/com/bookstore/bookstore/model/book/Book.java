@@ -2,22 +2,29 @@ package com.bookstore.bookstore.model.book;
 
 import javax.persistence.*;
 
+@Table(name = "book", indexes = {
+        @Index(name = "genre_idx", columnList = "genre"),
+        @Index(name = "year_idx", columnList = "year")
+}, uniqueConstraints = {
+        @UniqueConstraint(name = "isbn_unique", columnNames = {"isbn"})
+})
 @Entity
 public class Book {
+    @Id
+    @Column(name = "isbn", nullable = false, length = 50)
+    private String isbn;
 
-    private @Id String isbn;
+    @Column(name = "title", nullable = false, length = 50)
     private String title;
-    private String publisher;
-    private Integer year;
-    private String genre;
 
-//    @ManyToOne
-//    @JoinColumn(name = "book_isbn")
-//    private Book book;
-//
-//    public Book getBook() {
-//        return book;
-//    }
+    @Column(name = "publisher", nullable = false, length = 50)
+    private String publisher;
+
+    @Column(name = "year", nullable = false)
+    private Integer year;
+
+    @Column(name = "genre", nullable = false, length = 50)
+    private String genre;
 
     public String getGenre() {
         return genre;
@@ -55,7 +62,7 @@ public class Book {
         return isbn;
     }
 
-    public void setIsbn(String isbn) {
-        this.isbn= isbn;
+    public void setIsbn(String id) {
+        this.isbn = isbn;
     }
 }

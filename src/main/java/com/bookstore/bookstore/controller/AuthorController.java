@@ -7,8 +7,6 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(path="api/bookcollection")
 
@@ -45,10 +43,5 @@ public class AuthorController {
     public void deleteAuthor(@PathVariable Integer id) {
         authorService.deleteAuthorById(id);
     }
-
-//    @GetMapping("/books/{ISBN}/authors")
-//    public CollectionModel<EntityModel<Author>> getAuthors(@PathVariable String isbn){
-//        return authorService.get(isbn);
-//    }
 
 }

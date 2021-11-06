@@ -1,6 +1,5 @@
 package com.bookstore.bookstore.services.advices;
 
-import com.bookstore.bookstore.services.exceptions.AuthorNotFoundException;
 import com.bookstore.bookstore.services.exceptions.BookNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

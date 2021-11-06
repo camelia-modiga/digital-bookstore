@@ -38,6 +38,7 @@ CREATE TABLE `book_author` (
 insert into book_author values("ISBN 978-3-16-148410-0",1,1);
 insert into book_author values("ISBN 978-3-16-148410-0",2,2);
 
+select last_name,first_name,book.isbn from author,book_author,book where book_author.author_id=author.id and book_author.isbn=book.isbn;
 
 
 

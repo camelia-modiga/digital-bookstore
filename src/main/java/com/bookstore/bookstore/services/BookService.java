@@ -47,8 +47,9 @@ public class BookService {
     }
 
     public Book updateBook(Book newBook, String isbn) {
-
-        return bookRepository.findById(isbn)
+        if(bookRepository.findById(isbn).isEmpty())
+            throw new BookNotFoundException(isbn);
+        else return bookRepository.findById(isbn)
                 .map(book -> {
                     book.setTitle(newBook.getTitle());
                     book.setPublisher(newBook.getPublisher());
