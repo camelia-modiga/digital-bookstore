@@ -59,9 +59,13 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "Book not found",
                     content = @Content) })
     @GetMapping("/book/{isbn}")
-    public EntityModel<Book> getBookByIsbn(@Parameter(description = "isbn of author to be searched")
-                                               @PathVariable String isbn) {
-        return bookService.getOneBook(isbn);
+    public EntityModel<?> getBookByIsbn(@Parameter(description = "isbn of author to be searched")
+                                               @PathVariable String isbn,
+                                        @RequestParam(name = "verbose",defaultValue = "true") Optional<String> verbose) {
+        if(verbose.isEmpty())
+            return bookService.getOneBook(isbn);
+        else
+            return bookService.getBookPartialInformation(isbn);
     }
 
     @GetMapping(value="/books/filter")
@@ -71,13 +75,6 @@ public class BookController {
         return bookService.getBooksPerPage(page, items_per_page);
     }
 
-
-//    @GetMapping(value="/bo/{isbn}")//, params={"verbose"})
-//    public EntityModel<IFilteredBook> getPartialInformation(@PathVariable String isbn){
-//
-//    //}, @RequestParam(value = "verbose",defaultValue = "false") String verbose) {
-//        return bookService.getBookPartialInformation(isbn);
-//    }
 
     @Operation(summary = "Create a new book")
     @ApiResponses(value = {
@@ -96,6 +93,8 @@ public class BookController {
             @ApiResponse(responseCode = "201", description = "Update the book",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorService.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid isbn",
+                    content = @Content),
             @ApiResponse(responseCode = "404", description = "Book not found",
                     content = @Content) })
     @PutMapping("/book/{isbn}")
@@ -108,6 +107,8 @@ public class BookController {
             @ApiResponse(responseCode = "200", description = "Delete the book",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorService.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid isbn",
+                    content = @Content),
             @ApiResponse(responseCode = "404", description = "Book not found",
                     content = @Content) })
     @DeleteMapping("/book/{isbn}")

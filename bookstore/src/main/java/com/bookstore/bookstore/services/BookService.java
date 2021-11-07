@@ -2,6 +2,7 @@ package com.bookstore.bookstore.services;
 
 import com.bookstore.bookstore.assembler.BookModelAssembler;
 import com.bookstore.bookstore.interfaces.IBook;
+import com.bookstore.bookstore.interfaces.IFilteredBook;
 import com.bookstore.bookstore.model.book.Book;
 import com.bookstore.bookstore.model.book.BookRepository;
 import com.bookstore.bookstore.exceptions.BookNotFoundException;
@@ -55,25 +56,12 @@ public class BookService implements IBook {
         return assembler.toModel(book);
     }
 
-//    public EntityModel<IFilteredBook> getBookPartialInformation(String isbn){
-//        IFilteredBook book = bookRepository.partialFind(isbn)
-//                .orElseThrow(BookNotFoundException::new);
-//        return EntityModel.of(book,
-//                linkTo(methodOn(BookService.class).getBookPartialInformation(isbn)).withSelfRel(),
-//                linkTo(methodOn(BookService.class).getAllBooks("",0)).withRel("books"));
-//    }
-
-//    public EntityModel<?> getOneBook(String isbn,String verbose) {
-//        Optional<IFilteredBook> book;
-//        Optional<Book> book2;
-//        if(!isbn.equals(""))
-//            book2=bookRepository.findById(isbn);
-//        if(verbose=="false")
-//            book=bookRepository.partialFind(isbn);
-//        return EntityModel.of(book,
-//                linkTo(methodOn(BookService.class).getOneBook(isbn)).withSelfRel(),
-//                linkTo(methodOn(BookService.class).getAllBooks("",0)).withRel("books"));
-//    }
+    public EntityModel<?> getBookPartialInformation(String isbn){
+        Optional<IFilteredBook> book = bookRepository.partialFind(isbn);
+        return EntityModel.of(book,
+                linkTo(methodOn(BookService.class).getBookPartialInformation(isbn)).withSelfRel(),
+                linkTo(methodOn(BookService.class).getAllBooks("",0)).withRel("books"));
+    }
 
     public ResponseEntity<?> createNewBook(Book newBook) {
         EntityModel<Book> entityModel = assembler.toModel(bookRepository.save(newBook));

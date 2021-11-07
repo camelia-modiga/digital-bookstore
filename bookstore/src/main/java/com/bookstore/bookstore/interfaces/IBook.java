@@ -12,11 +12,9 @@ import java.util.Optional;
 public interface IBook {
     CollectionModel<EntityModel<Book>> getAllBooks(String genre,Integer year);
 
-    EntityModel<Book> getOneBook(String isbn);
+    EntityModel<?> getOneBook(String isbn);
 
-    //EntityModel<?> getOneBook(String isbn,String verbose);
-
-    //EntityModel<IFilteredBook> getBookPartialInformation(String isbn);
+    EntityModel<?> getBookPartialInformation(String isbn);
 
     ResponseEntity<?> createNewBook(Book newBook);
 

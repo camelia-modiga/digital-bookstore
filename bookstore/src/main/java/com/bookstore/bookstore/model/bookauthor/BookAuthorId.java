@@ -9,9 +9,10 @@ import java.util.Objects;
 
 @Embeddable
 public class BookAuthorId implements Serializable {
-    private static final long serialVersionUID = -8541276135677500003L;
+
     @Column(name = "author_index", nullable = false)
     private Integer authorIndex;
+
     @Column(name = "isbn", nullable = false, length = 50)
     private String isbn;
 
