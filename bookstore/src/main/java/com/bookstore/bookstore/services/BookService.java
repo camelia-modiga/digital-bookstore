@@ -2,6 +2,7 @@ package com.bookstore.bookstore.services;
 
 import com.bookstore.bookstore.interfaces.IBook;
 import com.bookstore.bookstore.interfaces.IFilteredBook;
+import com.bookstore.bookstore.model.author.Author;
 import com.bookstore.bookstore.model.book.Book;
 import com.bookstore.bookstore.model.book.BookRepository;
 import com.bookstore.bookstore.exceptions.BookNotFoundException;
@@ -15,10 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -34,68 +33,48 @@ public class BookService implements IBook {
         this.bookRepository = authorRepository;
     }
 
-    public CollectionModel<EntityModel<Book>> getAllBooks() {
-        List<EntityModel<Book>> books = bookRepository.findAll().stream()
+    public CollectionModel<EntityModel<Book>> getAllBooks(String genre, Integer year) {
+        List<Book> books = bookRepository.findAll();
+
+        if(!Objects.equals(genre, ""))
+            books=books.stream().filter(book -> book.getGenre().matches(String.valueOf(genre))).collect(Collectors.toList());
+        if(year!=0)
+            books=books.stream().filter(book-> book.getYear().toString().matches(year.toString())).collect(Collectors.toList());
+        List<EntityModel<Book>> final_list=books.stream()
                 .map(book -> EntityModel.of(book,
                         linkTo(methodOn(BookService.class).getOneBook(book.getIsbn())).withSelfRel(),
-                        linkTo(methodOn(BookService.class).getAllBooks()).withRel("books")))
+                        linkTo(methodOn(BookService.class).getAllBooks("",0)).withRel("books")))
                 .collect(Collectors.toList());
-
-        return CollectionModel.of(books, linkTo(methodOn(BookService.class).getAllBooks()).withSelfRel());
+        return CollectionModel.of(final_list, linkTo(methodOn(BookService.class).getAllBooks("",0)).withSelfRel());
     }
 
-    public EntityModel<Book> getOneBook(String isbn) {
+        public EntityModel<Book> getOneBook(String isbn) {
         Book book = bookRepository.findById(isbn)
-                .orElseThrow(() -> new BookNotFoundException());
+                .orElseThrow(BookNotFoundException::new);
         return EntityModel.of(book,
                 linkTo(methodOn(BookService.class).getOneBook(isbn)).withSelfRel(),
-                linkTo(methodOn(BookService.class).getAllBooks()).withRel("books"));
+                linkTo(methodOn(BookService.class).getAllBooks("",0)).withRel("books"));
     }
 
-    public CollectionModel<Book> getAllBooksByGenre(String genre) {
-        Optional<List<Book>> book = Optional.of(bookRepository.findByGenre(genre));
-        if(!book.isEmpty()) {
-            return CollectionModel.of(book.get(),
-                    linkTo(methodOn(BookService.class).getAllBooksByGenre(genre)).withSelfRel(),
-                    linkTo(methodOn(BookService.class).getAllBooks()).withRel("books"));
-        }
-        else{
-            throw new BookNotFoundException();
-        }
-    }
+//    public EntityModel<IFilteredBook> getBookPartialInformation(String isbn){
+//        IFilteredBook book = bookRepository.partialFind(isbn)
+//                .orElseThrow(BookNotFoundException::new);
+//        return EntityModel.of(book,
+//                linkTo(methodOn(BookService.class).getBookPartialInformation(isbn)).withSelfRel(),
+//                linkTo(methodOn(BookService.class).getAllBooks("",0)).withRel("books"));
+//    }
 
-    public CollectionModel<Book> getAllBooksByYear(Integer year) {
-        Optional<List<Book>> book = Optional.of(bookRepository.findByYear(year));
-        if(!book.isEmpty()) {
-            return CollectionModel.of(book.get(),
-                    linkTo(methodOn(BookService.class).getAllBooksByYear(year)).withSelfRel(),
-                    linkTo(methodOn(BookService.class).getAllBooks()).withRel("books"));
-        }
-        else{
-            throw new BookNotFoundException();
-        }
-    }
-
-    public CollectionModel<Book> getAllBooksByGenreAndYear(String genre,Integer year) {
-        Optional<List<Book>> book = Optional.of(bookRepository.findByGenreAndYear(genre,year));
-        if(!book.isEmpty()) {
-            return CollectionModel.of(book.get(),
-                    linkTo(methodOn(BookService.class).getAllBooksByGenreAndYear(genre,year)).withSelfRel(),
-                    linkTo(methodOn(BookService.class).getAllBooks()).withRel("books"));
-        }
-        else{
-            throw new BookNotFoundException();
-        }
-    }
-
-
-    public EntityModel<IFilteredBook> getBookPartialInformation(String isbn){
-        IFilteredBook book = bookRepository.partialFind(isbn)
-                .orElseThrow(() -> new BookNotFoundException());
-        return EntityModel.of(book,
-                linkTo(methodOn(BookService.class).getBookPartialInformation(isbn)).withSelfRel(),
-                linkTo(methodOn(BookService.class).getAllBooks()).withRel("books"));
-    }
+//    public EntityModel<?> getOneBook(String isbn,String verbose) {
+//        Optional<IFilteredBook> book;
+//        Optional<Book> book2;
+//        if(!isbn.equals(""))
+//            book2=bookRepository.findById(isbn);
+//        if(verbose=="false")
+//            book=bookRepository.partialFind(isbn);
+//        return EntityModel.of(book,
+//                linkTo(methodOn(BookService.class).getOneBook(isbn)).withSelfRel(),
+//                linkTo(methodOn(BookService.class).getAllBooks("",0)).withRel("books"));
+//    }
 
     public Book createNewBook(Book newBook) {
         return bookRepository.save(newBook);

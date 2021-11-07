@@ -5,13 +5,10 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
 public interface IAuthor {
-    CollectionModel<EntityModel<Author>> getAllAuthors();
+
+    CollectionModel<EntityModel<Author>> getAllAuthors(String last_name,String match);
 
     EntityModel<Author> getOneAuthor(Integer id);
-
-    CollectionModel<Author> getAllAuthorsByNamePartialMatch(String last_name);
-
-    CollectionModel<Author> getAllAuthorsByNamePerfectMatch(String last_name);
 
     Author createNewAuthor(Author newAuthor);
 

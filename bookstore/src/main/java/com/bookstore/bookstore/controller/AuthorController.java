@@ -1,8 +1,8 @@
 package com.bookstore.bookstore.controller;
 
 import com.bookstore.bookstore.model.author.Author;
+import com.bookstore.bookstore.model.book.Book;
 import com.bookstore.bookstore.services.AuthorService;
-import com.bookstore.bookstore.services.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path="api/bookcollection")
@@ -26,60 +28,65 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    @Operation(summary = "Get all authors from database")
+    @Operation(summary = "Get authors from database")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found authors",
+            @ApiResponse(responseCode = "200", description = "Found the authors",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorService.class)) }),
             @ApiResponse(responseCode = "404", description = "Authors not found",
                     content = @Content) })
     @GetMapping("/authors")
-    public CollectionModel<EntityModel<Author>> getAuthors(){
-        return authorService.getAllAuthors();
+    public CollectionModel<EntityModel<Author>> getAuthors(@Parameter(description = "Last name of author to be searched")
+                                                               @RequestParam(name="last_name")Optional<String> last_name,
+                                                           @Parameter(description = "If the value of parameter is equal to value `exact` " +
+                                                                   "the result of the search operation will be a perfect match")
+                                                                @RequestParam(name="match") Optional<String> match){
+        return authorService.getAllAuthors(last_name.orElse(""),match.orElse(""));
     }
 
-
+    @Operation(summary = "Search an author by his id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found the author",
+            @ApiResponse(responseCode = "200", description = "Find the author",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorService.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+            @ApiResponse(responseCode = "400", description = "Invalid id",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Author not found",
                     content = @Content) })
     @GetMapping("/author/{id}")
-    public EntityModel<Author> getAuthorById(@PathVariable Integer id) {
+    public EntityModel<Author> getAuthorById(@Parameter(description = "id of author to be searched")
+                                                 @PathVariable Integer id) {
         return authorService.getOneAuthor(id);
     }
 
-    @GetMapping(value="/authors", params="name")
-    public CollectionModel<Author> getAuthorByNamePartialMatch(@RequestParam(name="name",required = false)  String last_name) {
-        return authorService.getAllAuthorsByNamePartialMatch(last_name);
-    }
-
-    @Operation(summary = "Get all authors from database")
+    @Operation(summary = "Create a new author")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found authors",
+            @ApiResponse(responseCode = "200", description = "Author created",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorService.class)) }),
-            @ApiResponse(responseCode = "404", description = "Authors not found",
+            @ApiResponse(responseCode = "404", description = "Could not create the author",
                     content = @Content) })
-    @GetMapping(value="/authors", params={"name","match"})
-    public CollectionModel<Author> getAuthorByNamePerfectMatch(@RequestParam(name="name")  String last_name,@RequestParam(value = "match",defaultValue = "exact") String match) {
-        return authorService.getAllAuthorsByNamePerfectMatch(last_name);
-    }
-
     @PostMapping("/author")
     public Author createAuthor(@RequestBody Author newAuthor) {
         return authorService.createNewAuthor(newAuthor);
     }
 
+
+    @Operation(summary = "Update an author by his id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Update the author",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthorService.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid id",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Author not found",
+                    content = @Content) })
     @PutMapping("/author/{id}")
     public Author updateAuthor(@RequestBody Author newAuthor, @Parameter(description = "id of author to be updated") @PathVariable Integer id) {
         return authorService.updateAuthor(newAuthor,id);
     }
 
-    @Operation(summary = "Delete an author his its id")
+    @Operation(summary = "Delete an author by his id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Delete the author",
                     content = { @Content(mediaType = "application/json",

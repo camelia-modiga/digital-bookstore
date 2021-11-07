@@ -10,17 +10,13 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface IBook {
-    CollectionModel<EntityModel<Book>> getAllBooks();
+    CollectionModel<EntityModel<Book>> getAllBooks(String genre,Integer year);
 
     EntityModel<Book> getOneBook(String isbn);
 
-    CollectionModel<Book> getAllBooksByGenre(String genre);
+    //EntityModel<?> getOneBook(String isbn,String verbose);
 
-    CollectionModel<Book> getAllBooksByYear(Integer year);
-
-    CollectionModel<Book> getAllBooksByGenreAndYear(String genre, Integer year);
-
-    EntityModel<IFilteredBook> getBookPartialInformation(String isbn);
+    //EntityModel<IFilteredBook> getBookPartialInformation(String isbn);
 
     Book createNewBook(Book newBook);
 

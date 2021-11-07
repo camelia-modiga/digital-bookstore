@@ -33,6 +33,6 @@ public class BookAuthorService implements IBookAuthor {
                 .filter(r->r.getId().getIsbn().matches(isbn))
                 .map(l->author.getOneAuthor(l.getAuthor().getId()))
                 .collect(Collectors.toList());
-        return CollectionModel.of(authors, linkTo(methodOn(AuthorService.class).getAllAuthors()).withSelfRel());
+        return CollectionModel.of(authors, linkTo(methodOn(AuthorService.class).getAllAuthors("","")).withSelfRel());
     }
 }
