@@ -76,11 +76,9 @@ public class BookService implements IBook {
 //    }
 
     public ResponseEntity<?> createNewBook(Book newBook) {
-        EntityModel<Book> entityModel = assembler.toModel(bookRepository.
-                save(newBook));
+        EntityModel<Book> entityModel = assembler.toModel(bookRepository.save(newBook));
         return ResponseEntity
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
     public ResponseEntity<?> updateBook(Book newBook, String isbn) {
@@ -93,10 +91,7 @@ public class BookService implements IBook {
                     book.setGenre(newBook.getGenre());
                     return bookRepository.save(book);
                 })
-                .orElseGet(() -> {
-                    newBook.setIsbn(isbn);
-                    return bookRepository.save(newBook);
-                });
+                .orElseThrow(BookNotFoundException::new);
         EntityModel<Book> entityModel = assembler.toModel(updatedBook);
 
         return ResponseEntity
@@ -105,7 +100,10 @@ public class BookService implements IBook {
     }
 
     public ResponseEntity<?> deleteBookByIsbn(String isbn) {
-        bookRepository.deleteById(isbn);
+        if(bookRepository.findById(isbn).isEmpty())
+            throw new BookNotFoundException();
+        else
+            bookRepository.deleteById(isbn);
         return ResponseEntity.noContent().build();
     }
 

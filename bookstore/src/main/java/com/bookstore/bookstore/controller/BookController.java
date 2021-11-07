@@ -81,7 +81,7 @@ public class BookController {
 
     @Operation(summary = "Create a new book")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Book created",
+            @ApiResponse(responseCode = "201", description = "Book created",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorService.class)) }),
             @ApiResponse(responseCode = "404", description = "Could not create the book",
@@ -93,11 +93,9 @@ public class BookController {
 
     @Operation(summary = "Update a book by its isbn")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Update the book",
+            @ApiResponse(responseCode = "201", description = "Update the book",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorService.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid isbn",
-                    content = @Content),
             @ApiResponse(responseCode = "404", description = "Book not found",
                     content = @Content) })
     @PutMapping("/book/{isbn}")
@@ -110,8 +108,6 @@ public class BookController {
             @ApiResponse(responseCode = "200", description = "Delete the book",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorService.class)) }),
-            @ApiResponse(responseCode = "400", description = "Invalid isbn",
-                    content = @Content),
             @ApiResponse(responseCode = "404", description = "Book not found",
                     content = @Content) })
     @DeleteMapping("/book/{isbn}")

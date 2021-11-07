@@ -1,6 +1,7 @@
 package com.bookstore.bookstore.services;
 
 import com.bookstore.bookstore.assembler.AuthorModelAssembler;
+import com.bookstore.bookstore.exceptions.BookNotFoundException;
 import com.bookstore.bookstore.interfaces.IAuthor;
 import com.bookstore.bookstore.model.author.Author;
 import com.bookstore.bookstore.model.author.AuthorRepository;
@@ -64,17 +65,17 @@ public class AuthorService implements IAuthor {
                     author.setLastName(newAuthor.getLastName());
                     return authorRepository.save(author);
                 })
-                .orElseGet(() -> {
-                    newAuthor.setId(id);
-                    return authorRepository.save(newAuthor);
-                });
+                .orElseThrow(AuthorNotFoundException::new);
         EntityModel<Author> entityModel = assembler.toModel(updatedAuthor);
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
     public ResponseEntity<?>  deleteAuthorById(Integer id) {
-        authorRepository.deleteById(id);
+        if(authorRepository.findById(id).isEmpty())
+            throw new AuthorNotFoundException();
+        else
+            authorRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

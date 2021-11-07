@@ -62,7 +62,7 @@ public class AuthorController {
 
     @Operation(summary = "Create a new author")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Author created",
+            @ApiResponse(responseCode = "201", description = "Author created",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorService.class)) }),
             @ApiResponse(responseCode = "404", description = "Could not create the author",
@@ -72,10 +72,9 @@ public class AuthorController {
         return authorService.createNewAuthor(newAuthor);
     }
 
-
     @Operation(summary = "Update an author by his id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Update the author",
+            @ApiResponse(responseCode = "201", description = "Update the author",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorService.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid id",
