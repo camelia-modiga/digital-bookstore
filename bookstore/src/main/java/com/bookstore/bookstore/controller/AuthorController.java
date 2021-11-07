@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -67,7 +68,7 @@ public class AuthorController {
             @ApiResponse(responseCode = "404", description = "Could not create the author",
                     content = @Content) })
     @PostMapping("/author")
-    public Author createAuthor(@RequestBody Author newAuthor) {
+    public ResponseEntity<?> createAuthor(@RequestBody Author newAuthor) {
         return authorService.createNewAuthor(newAuthor);
     }
 
@@ -82,7 +83,7 @@ public class AuthorController {
             @ApiResponse(responseCode = "404", description = "Author not found",
                     content = @Content) })
     @PutMapping("/author/{id}")
-    public Author updateAuthor(@RequestBody Author newAuthor, @Parameter(description = "id of author to be updated") @PathVariable Integer id) {
+    public ResponseEntity<?> updateAuthor(@RequestBody Author newAuthor, @Parameter(description = "id of author to be updated") @PathVariable Integer id) {
         return authorService.updateAuthor(newAuthor,id);
     }
 
@@ -96,8 +97,8 @@ public class AuthorController {
             @ApiResponse(responseCode = "404", description = "Author not found",
                     content = @Content) })
     @DeleteMapping("/author/{id}")
-    public void deleteAuthor(@Parameter(description = "id of author to be deleted") @PathVariable Integer id) {
-        authorService.deleteAuthorById(id);
+    public ResponseEntity<?> deleteAuthor(@Parameter(description = "id of author to be deleted") @PathVariable Integer id) {
+       return authorService.deleteAuthorById(id);
     }
 
 }

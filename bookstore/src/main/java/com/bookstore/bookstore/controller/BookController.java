@@ -87,7 +87,7 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "Could not create the book",
                     content = @Content) })
     @PostMapping("/book")
-    public Book createBook(@RequestBody Book newBook) {
+    public ResponseEntity<?> createBook(@RequestBody Book newBook) {
         return bookService.createNewBook(newBook);
     }
 
@@ -101,7 +101,7 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "Book not found",
                     content = @Content) })
     @PutMapping("/book/{isbn}")
-    public Book updateBook(@RequestBody Book newBook, @Parameter(description = "isbn of book to be updated") @PathVariable String isbn) {
+    public ResponseEntity<?> updateBook(@RequestBody Book newBook, @Parameter(description = "isbn of book to be updated") @PathVariable String isbn) {
         return bookService.updateBook(newBook,isbn);
     }
 
@@ -115,7 +115,7 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "Book not found",
                     content = @Content) })
     @DeleteMapping("/book/{isbn}")
-    public void deleteBook(@Parameter(description = "isbn of book to be deleted") @PathVariable String isbn) {
-        bookService.deleteBookByIsbn(isbn);
+    public ResponseEntity<?> deleteBook(@Parameter(description = "isbn of book to be deleted") @PathVariable String isbn) {
+        return bookService.deleteBookByIsbn(isbn);
     }
 }

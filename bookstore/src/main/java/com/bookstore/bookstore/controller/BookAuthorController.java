@@ -28,17 +28,17 @@ public class BookAuthorController {
         this.bookAuthorService = bookAuthorService;
     }
 
-    @Operation(summary = "Search the authors of a a book by its id")
+    @Operation(summary = "Search the authors of a a book by its isbn")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Find the authors",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorService.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid isbn",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "Book not found",
+            @ApiResponse(responseCode = "404", description = "Authors ot found",
                     content = @Content) })
     @GetMapping("/book/{isbn}/authors")
-    public CollectionModel<EntityModel<Author>> getAuthors(@Parameter(description = "isb of book to be searched")
+    public CollectionModel<EntityModel<Author>> getAuthors(@Parameter(description = "isbn of book to be searched")
                                                                @PathVariable String isbn){
         return bookAuthorService.get(isbn);
     }

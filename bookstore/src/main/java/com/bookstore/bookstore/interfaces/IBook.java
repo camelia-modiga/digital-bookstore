@@ -18,11 +18,11 @@ public interface IBook {
 
     //EntityModel<IFilteredBook> getBookPartialInformation(String isbn);
 
-    Book createNewBook(Book newBook);
+    ResponseEntity<?> createNewBook(Book newBook);
 
-    Book updateBook(Book newBook, String isbn);
+    ResponseEntity<?> updateBook(Book newBook, String isbn);
 
-    void deleteBookByIsbn(String isbn);
+    ResponseEntity<?> deleteBookByIsbn(String isbn);
 
     ResponseEntity<Map<String, Object>> getBooksPerPage(int page, int items_per_page);
 }
