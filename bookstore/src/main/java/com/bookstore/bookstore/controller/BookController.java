@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path="api/bookcollection")
 
 public class BookController {
 
@@ -34,13 +33,15 @@ public class BookController {
             @ApiResponse(responseCode = "200", description = "Found the books", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) }),
             @ApiResponse(responseCode = "404", description = "Books not found", content = @Content) })
 
-    @GetMapping(value="/books")
+    @RequestMapping(value="api/bookcollection/books", method = RequestMethod.GET)
 
     public CollectionModel<EntityModel<Book>> getBooks( @Parameter(description = "genre of book to be searched")
                                                             @RequestParam(name="genre") Optional<String> genre,
                                                         @Parameter(description = "year of book to be searched")
-                                                            @RequestParam(name="year") Optional<Integer> year){
-        return bookService.getAllBooks(genre.orElse(""),year.orElse(0));
+                                                            @RequestParam(name="year") Optional<Integer> year,
+                                                        @RequestParam(defaultValue = "0") Optional<Integer> page,
+                                                        @RequestParam(defaultValue = "3") Optional<Integer> items_per_page){
+        return bookService.getAllBooks(genre.orElse(""),year.orElse(0),page.orElse(0),items_per_page.orElse(3));
     }
 
     @Operation(summary = "Search a book by its isbn")
@@ -49,23 +50,17 @@ public class BookController {
             @ApiResponse(responseCode = "400", description = "Invalid isbn", content = @Content),
             @ApiResponse(responseCode = "404", description = "Book not found", content = @Content) })
 
-    @GetMapping("/book/{isbn}")
+    @RequestMapping(value="api/bookcollection/book/{isbn}", method = RequestMethod.GET)
 
     public EntityModel<?> getBookByIsbn(@Parameter(description = "isbn of book to be searched")
                                                @PathVariable String isbn,
-                                        @RequestParam(name = "verbose") Optional<String> verbose) {
+                                        @Parameter(description = "If the value of parameter is equal to value `false` "+
+                                                "the search operation will show only some details of the book")
+                                                @RequestParam(name = "verbose") Optional<Boolean> verbose) {
         if(verbose.isEmpty())
             return bookService.getOneBook(isbn);
         else
             return bookService.getBookPartialInformation(isbn);
-    }
-
-
-    @GetMapping(value="/books/filter")
-    public ResponseEntity<Map<String, Object>> getBooksPerPage(
-                                                               @RequestParam(defaultValue = "0") int page,
-                                                               @RequestParam(defaultValue = "3") int items_per_page) {
-        return bookService.getBooksPerPage(page, items_per_page);
     }
 
 
@@ -74,7 +69,7 @@ public class BookController {
             @ApiResponse(responseCode = "201", description = "Book created", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) }),
             @ApiResponse(responseCode = "406", description = "Could not create the book", content = @Content) })
 
-    @PostMapping("/book")
+    @RequestMapping(value="api/bookcollection/book", method = RequestMethod.POST)
 
     public ResponseEntity<?> createBook(@RequestBody Book newBook) {
         return bookService.createNewBook(newBook);
@@ -90,7 +85,7 @@ public class BookController {
             @ApiResponse(responseCode = "409", description = "Conflict", content = @Content),
     })
 
-    @PutMapping("/book/{isbn}")
+    @RequestMapping(value="api/bookcollection/book/{isbn}", method = RequestMethod.PUT)
 
     public ResponseEntity<?> updateBook(@RequestBody Book newBook, @Parameter(description = "isbn of book to be updated") @PathVariable String isbn) {
         return bookService.updateBook(newBook,isbn);
@@ -103,7 +98,7 @@ public class BookController {
             @ApiResponse(responseCode = "400", description = "Invalid isbn", content = @Content),
             @ApiResponse(responseCode = "404", description = "Book not found", content = @Content) })
 
-    @DeleteMapping("/book/{isbn}")
+    @RequestMapping(value="api/bookcollection/book/{isbn}", method = RequestMethod.DELETE)
 
     public ResponseEntity<?> deleteBook(@Parameter(description = "isbn of book to be deleted") @PathVariable String isbn) {
         return bookService.deleteBookByIsbn(isbn);

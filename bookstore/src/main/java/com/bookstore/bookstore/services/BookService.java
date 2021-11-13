@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +37,14 @@ public class BookService implements IBook {
         this.assembler=assembler;
     }
 
-    public CollectionModel<EntityModel<Book>> getAllBooks(String genre, Integer year) {
-        List<Book> books = bookRepository.findAll();
+    public CollectionModel<EntityModel<Book>> getAllBooks(String genre, Integer year,int page, int items_per_page) {
+        List<Book> books ;
+
+        Pageable paging = PageRequest.of(page, items_per_page);
+        Page<Book> pageBook;
+
+        pageBook = bookRepository.findAll(paging);
+        books = pageBook.getContent();
 
         if(!Objects.equals(genre, ""))
             books=books.stream().filter(book -> book.getGenre().matches(String.valueOf(genre))).collect(Collectors.toList());
@@ -48,7 +53,7 @@ public class BookService implements IBook {
         List<EntityModel<Book>> final_list=books.stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
-        return CollectionModel.of(final_list, linkTo(methodOn(BookController.class).getBooks(Optional.of(genre),Optional.of(year))).withSelfRel());
+        return CollectionModel.of(final_list, linkTo(methodOn(BookController.class).getBooks(Optional.of(genre),Optional.of(year),Optional.of(0),Optional.of(3))).withSelfRel());
     }
 
         public EntityModel<Book> getOneBook(String isbn) {
@@ -61,7 +66,7 @@ public class BookService implements IBook {
         Optional<IFilteredBook> book = bookRepository.partialFind(isbn);
         return EntityModel.of(book,
                 linkTo(methodOn(BookService.class).getBookPartialInformation(isbn)).withSelfRel(),
-                linkTo(methodOn(BookController.class).getBooks(Optional.of(""),Optional.of(0))).withRel("books"));
+                linkTo(methodOn(BookController.class).getBooks(Optional.of(""),Optional.of(0),Optional.of(0),Optional.of(3))).withRel("books"));
     }
 
     public ResponseEntity<?> createNewBook(Book newBook) {
@@ -94,25 +99,5 @@ public class BookService implements IBook {
         else
             bookRepository.deleteById(isbn);
         return ResponseEntity.noContent().build();
-    }
-
-    public ResponseEntity<Map<String, Object>> getBooksPerPage(int page, int items_per_page){
-        try {
-            List<Book> book;
-            Pageable paging = PageRequest.of(page, items_per_page);
-            Page<Book> pageBook;
-
-            pageBook = bookRepository.findAll(paging);
-            book = pageBook.getContent();
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("books", book);
-            response.put("currentPage", pageBook.getNumber());
-            response.put("totalItems", pageBook.getTotalElements());
-            response.put("totalPages", pageBook.getTotalPages());
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }

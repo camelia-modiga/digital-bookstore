@@ -39,16 +39,17 @@ public class AuthorService implements IAuthor {
         this.assembler=assembler;
     }
 
-    public CollectionModel<EntityModel<Author>> getAllAuthors(String last_name,String match) {
+    public ResponseEntity<?> getAllAuthors(String last_name,String match) {
         List<Author> authors=authorRepository.findAll();
         if(!Objects.equals(last_name, "") && Objects.equals(match, "exact"))
             authors=authors.stream().filter(author -> author.getLastName().matches(last_name)).collect(Collectors.toList());
         if(!Objects.equals(last_name, ""))
             authors=authors.stream().filter(author ->author.getLastName().contains(last_name)).collect(Collectors.toList());
-        List<EntityModel<Author>> final_list=authors.stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-        return CollectionModel.of(final_list, linkTo(methodOn(AuthorController.class).getAuthors(Optional.of(last_name),Optional.of(match))).withSelfRel());
+//        List<EntityModel<Author>> final_list=authors.stream()
+//                .map(assembler::toModel)
+//                .collect(Collectors.toList());
+        return ResponseEntity.ok(assembler.toCollectionModel(authors));
+        //return CollectionModel.of(final_list, linkTo(methodOn(AuthorController.class).getAuthors(Optional.of(last_name),Optional.of(match))).withSelfRel());
     }
 
     public EntityModel<Author> getOneAuthor(Integer id) {
