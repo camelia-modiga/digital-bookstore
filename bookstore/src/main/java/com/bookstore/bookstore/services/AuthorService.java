@@ -1,11 +1,12 @@
 package com.bookstore.bookstore.services;
 
 import com.bookstore.bookstore.assembler.AuthorModelAssembler;
-import com.bookstore.bookstore.exceptions.BookNotFoundException;
+import com.bookstore.bookstore.controller.AuthorController;
 import com.bookstore.bookstore.interfaces.IAuthor;
 import com.bookstore.bookstore.model.author.Author;
 import com.bookstore.bookstore.model.author.AuthorRepository;
 import com.bookstore.bookstore.exceptions.AuthorNotFoundException;
+import com.bookstore.bookstore.model.bookauthor.BookAuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -26,10 +28,14 @@ public class AuthorService implements IAuthor {
     private final AuthorRepository authorRepository;
 
     @Autowired
+    private final BookAuthorRepository bookAuthorRepository;
+
+    @Autowired
     private final AuthorModelAssembler assembler;
 
-    public AuthorService(AuthorRepository authorRepository,AuthorModelAssembler assembler){
+    public AuthorService(AuthorRepository authorRepository,BookAuthorRepository bookAuthorRepository,AuthorModelAssembler assembler){
         this.authorRepository = authorRepository;
+        this.bookAuthorRepository=bookAuthorRepository;
         this.assembler=assembler;
     }
 
@@ -42,7 +48,7 @@ public class AuthorService implements IAuthor {
         List<EntityModel<Author>> final_list=authors.stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
-        return CollectionModel.of(final_list, linkTo(methodOn(AuthorService.class).getAllAuthors("","")).withSelfRel());
+        return CollectionModel.of(final_list, linkTo(methodOn(AuthorController.class).getAuthors(Optional.of(last_name),Optional.of(match))).withSelfRel());
     }
 
     public EntityModel<Author> getOneAuthor(Integer id) {
@@ -77,5 +83,13 @@ public class AuthorService implements IAuthor {
         else
             authorRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    public CollectionModel<EntityModel<Author>> getAuthorsBooks(String isbn) {
+        List<EntityModel<Author>> authors=bookAuthorRepository.findAll().stream()
+                .filter(r->r.getId().getIsbn().matches(isbn))
+                .map(l->getOneAuthor(l.getAuthor().getId()))
+                .collect(Collectors.toList());
+        return CollectionModel.of(authors, linkTo(methodOn(AuthorController.class).getAuthors(Optional.of(""),Optional.of(""))).withSelfRel());
     }
 }

@@ -16,4 +16,6 @@ public interface IAuthor {
     ResponseEntity<?> updateAuthor(Author newAuthor, Integer id);
 
     ResponseEntity<?> deleteAuthorById(Integer id);
+
+    CollectionModel<EntityModel<Author>> getAuthorsBooks(String isbn);
 }

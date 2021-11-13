@@ -1,11 +1,10 @@
 package com.bookstore.bookstore.model.book;
+
 import com.bookstore.bookstore.interfaces.IFilteredBook;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository

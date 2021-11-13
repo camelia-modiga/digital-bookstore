@@ -1,10 +1,12 @@
 package com.bookstore.bookstore.assembler;
 
+import com.bookstore.bookstore.controller.AuthorController;
 import com.bookstore.bookstore.model.author.Author;
-import com.bookstore.bookstore.services.AuthorService;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -13,8 +15,8 @@ public class AuthorModelAssembler implements RepresentationModelAssembler<Author
     @Override
     public EntityModel<Author> toModel(Author author) {
         return EntityModel.of(author,
-                linkTo(methodOn(AuthorService.class).getOneAuthor(author.getId())).withSelfRel(),
-                linkTo(methodOn(AuthorService.class).getAllAuthors("","")).withRel("authors"));
+                linkTo(methodOn(AuthorController.class).getAuthorById(author.getId())).withSelfRel(),
+                linkTo(methodOn(AuthorController.class).getAuthors(Optional.of(author.getLastName()),Optional.of(""))).withRel("authors"));
     }
 }
 

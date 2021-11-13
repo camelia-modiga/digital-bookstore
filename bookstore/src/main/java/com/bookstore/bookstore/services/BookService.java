@@ -1,6 +1,7 @@
 package com.bookstore.bookstore.services;
 
 import com.bookstore.bookstore.assembler.BookModelAssembler;
+import com.bookstore.bookstore.controller.BookController;
 import com.bookstore.bookstore.interfaces.IBook;
 import com.bookstore.bookstore.interfaces.IFilteredBook;
 import com.bookstore.bookstore.model.book.Book;
@@ -47,7 +48,7 @@ public class BookService implements IBook {
         List<EntityModel<Book>> final_list=books.stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
-        return CollectionModel.of(final_list, linkTo(methodOn(BookService.class).getAllBooks("",0)).withSelfRel());
+        return CollectionModel.of(final_list, linkTo(methodOn(BookController.class).getBooks(Optional.of(genre),Optional.of(year))).withSelfRel());
     }
 
         public EntityModel<Book> getOneBook(String isbn) {
@@ -60,7 +61,7 @@ public class BookService implements IBook {
         Optional<IFilteredBook> book = bookRepository.partialFind(isbn);
         return EntityModel.of(book,
                 linkTo(methodOn(BookService.class).getBookPartialInformation(isbn)).withSelfRel(),
-                linkTo(methodOn(BookService.class).getAllBooks("",0)).withRel("books"));
+                linkTo(methodOn(BookController.class).getBooks(Optional.of(""),Optional.of(0))).withRel("books"));
     }
 
     public ResponseEntity<?> createNewBook(Book newBook) {
