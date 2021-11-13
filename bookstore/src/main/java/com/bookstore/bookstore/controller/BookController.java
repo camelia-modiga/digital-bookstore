@@ -39,8 +39,10 @@ public class BookController {
                                                             @RequestParam(name="genre") Optional<String> genre,
                                                         @Parameter(description = "year of book to be searched")
                                                             @RequestParam(name="year") Optional<Integer> year,
-                                                        @RequestParam(defaultValue = "0") Optional<Integer> page,
-                                                        @RequestParam(defaultValue = "3") Optional<Integer> items_per_page){
+                                                        @Parameter(description = "Zero-based page index")
+                                                            @RequestParam(defaultValue = "0") Optional<Integer> page,
+                                                        @Parameter(description = "The size of the page to be returned")
+                                                            @RequestParam(defaultValue = "3") Optional<Integer> items_per_page){
         return bookService.getAllBooks(genre.orElse(""),year.orElse(0),page.orElse(0),items_per_page.orElse(3));
     }
 
