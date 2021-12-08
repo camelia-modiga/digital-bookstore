@@ -1,6 +1,10 @@
 package com.bookstore.bookstore.model.book;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Table(name = "book", indexes = {
         @Index(name = "genre_idx", columnList = "genre"),
@@ -8,19 +12,27 @@ import javax.persistence.*;
 })
 @Entity
 public class Book {
+    @Schema(description = "Unique identifier of the book.", example = "ISBN 978-3-16-148410-0", required = true)
     @Id
     @Column(name = "isbn", nullable = false, length = 50)
     private String isbn;
 
+    @Schema(description = "Title of the book.", example = "Triangle at Rhodes", required = true)
+    @Size(max = 50)
     @Column(name = "title", nullable = false, length = 50)
     private String title;
 
+    @Schema(description = "Name of the publisher.", example = "The Witness", required = true)
+    @Size(max = 50)
     @Column(name = "publisher", nullable = false, length = 50)
     private String publisher;
 
+    @Schema(description = "Year of publication.", example = "2010", required = true)
     @Column(name = "year", nullable = false)
     private Integer year;
 
+    @Schema(description = "Genre of the book.", example = "Mister", required = true)
+    @Size(max = 50)
     @Column(name = "genre", nullable = false, length = 50)
     private String genre;
 

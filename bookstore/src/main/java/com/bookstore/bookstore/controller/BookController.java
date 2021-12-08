@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-
+@Tag(name = "Books", description = "The books API")
 public class BookController {
 
     @Autowired
@@ -28,12 +29,15 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @Operation(summary = "Get books from database")
-    @ApiResponses(value = {
+    @Operation(summary = "Get books from database",
+    tags = {"Books"},
+            responses = {
             @ApiResponse(responseCode = "200", description = "Found the books", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Book.class)) }),
-            @ApiResponse(responseCode = "404", description = "Books not found", content = @Content) })
+            @ApiResponse(responseCode = "404", description = "Books not found", content = @Content)
+    }
+    )
 
-    @RequestMapping(value="api/bookcollection/books", method = RequestMethod.GET)
+    @RequestMapping(value="api/bookcollection/books", method = RequestMethod.GET,produces = "application/json")
 
     public CollectionModel<EntityModel<Book>> getBooks( @Parameter(description = "genre of book to be searched")
                                                             @RequestParam(name="genre") Optional<String> genre,
@@ -54,7 +58,7 @@ public class BookController {
 
     @RequestMapping(value="api/bookcollection/book/{isbn}", method = RequestMethod.GET)
 
-    public EntityModel<?> getBookByIsbn(@Parameter(description = "isbn of book to be searched")
+    public EntityModel<?> getBookByIsbn(@Parameter(description = "isbn of book to be searched. Cannot be empty")
                                                @PathVariable String isbn,
                                         @Parameter(description = "If the value of parameter is equal to value `false` "+
                                                 "the search operation will show only some details of the book")
@@ -89,7 +93,7 @@ public class BookController {
 
     @RequestMapping(value="api/bookcollection/book/{isbn}", method = RequestMethod.PUT)
 
-    public ResponseEntity<?> updateBook(@RequestBody Book newBook, @Parameter(description = "isbn of book to be updated") @PathVariable String isbn) {
+    public ResponseEntity<?> updateBook(@RequestBody Book newBook, @Parameter(description = "isbn of book to be updated. Cannot be empty") @PathVariable String isbn) {
         return bookService.updateBook(newBook,isbn);
     }
 
@@ -102,7 +106,7 @@ public class BookController {
 
     @RequestMapping(value="api/bookcollection/book/{isbn}", method = RequestMethod.DELETE)
 
-    public ResponseEntity<?> deleteBook(@Parameter(description = "isbn of book to be deleted") @PathVariable String isbn) {
+    public ResponseEntity<?> deleteBook(@Parameter(description = "isbn of book to be deleted. Cannot be empty") @PathVariable String isbn) {
         return bookService.deleteBookByIsbn(isbn);
     }
 }
