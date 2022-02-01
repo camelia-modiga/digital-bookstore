@@ -1,6 +1,7 @@
 package com.bookstore.bookstore.controller;
 
 import com.bookstore.bookstore.model.author.Author;
+import com.bookstore.bookstore.model.book.Book;
 import com.bookstore.bookstore.model.bookauthor.BookAuthor;
 import com.bookstore.bookstore.services.AuthorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +23,6 @@ import java.util.Optional;
 
 @RestController
 @Tag(name = "Authors", description = "The authors API")
-@RequestMapping(value = "/api/bookcollection", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class AuthorController {
 
     @Autowired
@@ -37,18 +37,16 @@ public class AuthorController {
             @ApiResponse(responseCode = "200", description = "Found the authors", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Author.class)) }),
             @ApiResponse(responseCode = "404", description = "Authors not found", content = @Content) })
 
-    @RequestMapping(value="/authors", method = RequestMethod.OPTIONS)
+    @RequestMapping(value="api/bookcollection/authors", method = RequestMethod.GET,produces = "application/json")
 
 
-    public ResponseEntity<?>  getAuthors(@Parameter(description = "Last name of author to be searched")
+    public CollectionModel<EntityModel<Author>> getAuthors(@Parameter(description = "Last name of author to be searched")
                                                                @RequestParam(name="last_name")Optional<String> last_name,
                                                            @Parameter(description = "If the value of parameter is equal to value `exact` " +
                                                                    "the result of the search operation will be a perfect match")
                                                                 @RequestParam(name="match") Optional<String> match){
-        return ResponseEntity
-                .ok()
-                .allow(HttpMethod.GET).body(
-        authorService.getAllAuthors(last_name.orElse(""),match.orElse("")));
+
+       return authorService.getAllAuthors(last_name.orElse(""),match.orElse(""));
     }
 
     @Operation(summary = "Search an author by his id")

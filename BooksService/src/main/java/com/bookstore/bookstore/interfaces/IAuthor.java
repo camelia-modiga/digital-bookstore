@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface IAuthor {
 
-    ResponseEntity<?>  getAllAuthors(String last_name,String match);
+    CollectionModel<EntityModel<Author>> getAllAuthors(String last_name,String match);
 
     EntityModel<Author> getOneAuthor(Integer id);
 

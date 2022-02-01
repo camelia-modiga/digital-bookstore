@@ -50,6 +50,7 @@ public class BookService implements IBook {
             books=books.stream().filter(book -> book.getGenre().matches(String.valueOf(genre))).collect(Collectors.toList());
         if(year!=0)
             books=books.stream().filter(book-> book.getYear().toString().matches(year.toString())).collect(Collectors.toList());
+
         List<EntityModel<Book>> final_list=books.stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());

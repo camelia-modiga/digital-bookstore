@@ -1,7 +1,9 @@
 package com.bookstore.bookstore.repository;
 
 public class OrderRepositoryImpl implements OrderRepositoryCustom {
+
     private String collectionName;
+
     @Override
     public String getCollectionName() {
         return collectionName;
