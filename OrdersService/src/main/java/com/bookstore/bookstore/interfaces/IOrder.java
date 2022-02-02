@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IOrder {
 
-    List<Order> getAllOrdersForClientId(Long clientId);
+    List<Order> getAllOrdersForClient(Long clientId);
 
-    Order createOrder(List<Book> items, Long clientId);
+    Order createNewOrder(List<Book> items, Long clientId);
 }

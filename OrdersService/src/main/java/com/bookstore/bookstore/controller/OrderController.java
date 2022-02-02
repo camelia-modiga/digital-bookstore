@@ -18,12 +18,15 @@ import java.util.List;
 public class OrderController {
 
     @Autowired
-    private OrderService orderService;
-    private HttpServletRequest request;
+    private final OrderService orderService;
+
+    public OrderController(OrderService orderService){
+        this.orderService=orderService;
+    }
 
     @RequestMapping(value="api/bookorder/orders/{id}", method = RequestMethod.GET)
     public ResponseEntity<List<Order>> getAllOrdersForClientId(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(orderService.getAllOrdersForClientId(id));
+        return ResponseEntity.ok(orderService.getAllOrdersForClient(id));
     }
 
     @RequestMapping(value="api/bookorder/order/{id}", method = RequestMethod.POST)
@@ -32,7 +35,7 @@ public class OrderController {
             @RequestBody List<Book> items) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(orderService.createOrder(items, id));
+                .body(orderService.createNewOrder(items, id));
     }
 
 }

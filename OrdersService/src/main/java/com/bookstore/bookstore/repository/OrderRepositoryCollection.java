@@ -1,6 +1,6 @@
 package com.bookstore.bookstore.repository;
 
-public interface OrderRepositoryCustom {
+public interface OrderRepositoryCollection {
 
     String getCollectionName();
 

@@ -1,6 +1,6 @@
 package com.bookstore.bookstore.repository;
 
-public class OrderRepositoryImpl implements OrderRepositoryCustom {
+public class OrderRepositoryImpl implements OrderRepositoryCollection {
 
     private String collectionName;
 

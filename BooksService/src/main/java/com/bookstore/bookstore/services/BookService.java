@@ -84,6 +84,8 @@ public class BookService implements IBook {
                     book.setPublisher(newBook.getPublisher());
                     book.setYear(newBook.getYear());
                     book.setGenre(newBook.getGenre());
+                    book.setStock(newBook.getStock());
+                    book.setPrice(newBook.getPrice());
                     return bookRepository.save(book);
                 })
                 .orElseThrow(BookNotFoundException::new);

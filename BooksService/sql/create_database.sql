@@ -14,6 +14,8 @@ CREATE TABLE book (
   publisher varchar(50) NOT NULL,
   year int NOT NULL,
   genre varchar(50) NOT NULL,
+  price double(40,2) NOT NULL,
+  stock int NOT NULL,
   CONSTRAINT isbn_pk PRIMARY KEY (isbn)
 );
 CREATE INDEX year_idx on book(year);

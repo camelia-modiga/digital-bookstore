@@ -6,27 +6,36 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
 
-@Data
 @Builder
-@AllArgsConstructor
 @Document(collection = "#{@orderRepository.getCollectionName()}")
 public class Order {
 
     @Id
     private String orderId;
-
-    @NotNull(message = "Order's status can not be null")
     private OrderStatus orderStatus;
-
-    @NotNull(message = "Order's date can not be null")
+    @Builder.Default
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy - hh:mm:ssa")
-    private LocalDateTime date;
-
+    private LocalDateTime date=LocalDateTime.now();;
     @Field(name = "books")
     private List<Book> items;
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public List<Book> getItems() {
+        return items;
+    }
 }

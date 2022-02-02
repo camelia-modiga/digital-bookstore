@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 @Table(name = "book", indexes = {
@@ -36,6 +38,24 @@ public class Book {
     @Column(name = "genre", nullable = false, length = 50)
     private String genre;
 
+    private Double price;
+    private Integer stock;
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
     public String getGenre() {
         return genre;
     }
