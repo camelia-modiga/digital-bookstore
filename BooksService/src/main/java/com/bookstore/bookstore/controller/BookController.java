@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 @Tag(name = "Books", description = "The books API")
 public class BookController {
 

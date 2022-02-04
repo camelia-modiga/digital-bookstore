@@ -6,8 +6,7 @@ import com.bookstore.bookstore.model.Order;
 import java.util.List;
 
 public interface IOrder {
+    List<Order> getAllOrdersForClient(Integer id);
 
-    List<Order> getAllOrdersForClient(Long clientId);
-
-    Order createNewOrder(List<Book> items, Long clientId);
+    Order createNewOrder(List<Book> items, Integer id);
 }

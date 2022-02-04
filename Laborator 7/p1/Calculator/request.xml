@@ -7,20 +7,5 @@
          <gs:param2>3</gs:param2>
       </gs:addRequest>
 
-      <gs:subtractionRequest>
-         <gs:param1>9</gs:param1>
-         <gs:param2>8</gs:param2>
-      </gs:subtractionRequest>
-
-      <gs:divideRequest>
-         <gs:param1>4</gs:param1>
-         <gs:param2>2</gs:param2>
-      </gs:divideRequest>
-
-      <gs:divideRequest>
-         <gs:param1>4</gs:param1>
-         <gs:param2>2</gs:param2>
-      </gs:divideRequest>
-
    </soapenv:Body>
 </soapenv:Envelope>

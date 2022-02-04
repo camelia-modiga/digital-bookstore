@@ -18,8 +18,8 @@ public class Order {
     private String orderId;
     private OrderStatus orderStatus;
     @Builder.Default
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy - hh:mm:ssa")
-    private LocalDateTime date=LocalDateTime.now();;
+    private LocalDateTime date = LocalDateTime.now();
+
     @Field(name = "books")
     private List<Book> items;
 
